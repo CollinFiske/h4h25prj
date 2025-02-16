@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LA Rental Home Finder</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+
+    <div class="form-container">
+        <form id="propertyForm"  class="form-container" method="POST">
+            <div class="input-group">
+                <h2>Enter Rental Information:</h2>
+            </div>
+
+            <div class="input-group">
+                <input type="hidden" name="form_type" value="property_search">
+            </div>
+            
+            <div class="input-group">
+                <label for="beds">Number of Beds:</label>
+                <select id="beds" name="beds" >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="baths">Number of Baths:</label>
+                <select id="baths" name="baths" >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="min_price">Min Price:</label>
+                <input type="number" id="min_price" name="min_price" value="{{ request.form.get('min_price', '') }}" >
+            </div>
+
+            <div class="input-group">
+                <label for="max_price">Max Price:</label>
+                <input type="number" id="max_price" name="max_price" value="{{ request.form.get('max_price', '') }}" >
+            </div>
+
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <hr>
+
+    <div class="nonHeader">
+        <div class="leftSide">
+
+            <div>
+                <form method="POST">
+                    <input type="hidden" name="form_type" value="ai_request">
+                    <input style="width: 145px;" type="text" id="aiResponseAddy" name="aiResponseAddy" placeholder="Enter Address: " value="{{ aiResponseAddy }}">
+                    <input style="width: 145px;" type="text" id="aiResponsePrice" name="aiResponsePrice" placeholder="Enter Price:  " value="{{ aiResponsePrice }}">
+                    <button type="submit" id="aiResponseButton">Good Deal? Ask AI!</button>
+                </form>
+                {% if ai_response %}
+                    <h2>AI Response:</h2>
+                    <p>{{ ai_response }}</p>
+                {% endif %}
+                <hr>
+            </div>
+
+            <script>
+                function showOnMap(lat, lng) {
+                    var uluru = {lat: lat, lng: lng};
+                    var map = new google.maps.Map(document.getElementById('map'), {zoom: 20, center: uluru});
+                    var marker = new google.maps.Marker({position: uluru, map: map});
+                }
+            </script>
+    
+            
+            <div class="table-container">
+                <h2>Properties:</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Address</th>
+                            <th>Bedrooms</th>
+                            <th>Bathrooms</th>
+                            <th>Square Footage</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if properties %}
+                            {% for property in properties %}
+                                <tr>
+                                    <td><b>{{ property.address }}</b></td>
+                                    <td>{{ property.bedrooms }}</td>
+                                    <td>{{ property.bathrooms }}</td>
+                                    <td>{{ property.square_footage }}</td>
+                                    <td>${{ property.price }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No properties found</td>
+                            </tr>
+                        {% endif %}   
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    
+        <div class="rightSide" id="map">
+
+            <script>
+                function initMap() {
+                    var uluru = {lat: 34.07350927083481, lng: -118.27176053009421};
+                    var map = new google.maps.Map(document.getElementById('map'), {zoom: 10, center: uluru});
+                    
+                    // Create array of property coordinates
+                    var properties = [
+                        {% for property in properties %}
+                            {% if property.coordinates %}
+                                {
+                                    position: {
+                                        lat: {{ property.coordinates[0] }},
+                                        lng: {{ property.coordinates[1] }}
+                                    },
+                                    title: "{{ property.address|default('Property') }}",
+                                    price: "{{ property.price }}"
+                                },
+                            {% endif %}
+                        {% endfor %}
+                    ];
+
+                    // Add markers for each property
+                    properties.forEach(function(property) {
+                        var marker = new google.maps.Marker({
+                            position: property.position,
+                            map: map,
+                            title: property.title
+                        });
+        
+                        // Add info window with property details
+                        var infoContent = '<div><strong>' + property.title + '</strong><br>Price: $' + property.price + '</div>';
+                        var infowindow = new google.maps.InfoWindow({
+                            content: infoContent
+                        });
+        
+                        marker.addListener('click', function() {
+                            infowindow.open(map, marker);
+                        });
+                    });
+
+                    var fireMarkers = [
+                        {position: { lat: 34.05790790501204, lng: -118.54955720783245 }},
+                        {position: { lat: 34.09999357434969, lng: -118.52586793858654 }},
+                        {position: { lat: 34.123160197754565, lng: -118.5275845523 }},
+                        {position: { lat: 34.13353337675303, lng: -118.56586503811046 }},
+                        {position: { lat: 34.11335424204288, lng: -118.56517839262507 }},
+                        {position: { lat: 34.05861898522152, lng: -118.60036897375127 }},
+                        {position: { lat: 34.05634350755247, lng: -118.62937974550898 }},
+                        {position: { lat: 34.10781124239683, lng: -118.5452656735488 }},
+                        {position: { lat: 34.084071726586174, lng: -118.59109925969852 }},
+                        {position: { lat: 34.055205745810525, lng: -118.6511807396701 }},
+                        {position: { lat: 34.21582505955641, lng: -118.14747620901632 }},
+                        {position: { lat: 34.21569545239457, lng: -118.11973434427833 }},
+                        {position: { lat: 34.209085222792744, lng: -118.1054715776616 }},
+                        {position: { lat: 34.20390036617722, lng: -118.09387328392937 }},
+                        {position: { lat: 34.19365933742958, lng: -118.08290192499345 }},
+                        {position: { lat: 34.1870473796913, lng: -118.07631910963187 }},
+                        {position: { lat: 34.18471362379043, lng: -118.05829473423714 }},
+                        {position: { lat: 34.18639912063994, lng: -118.04873397859298 }},
+                        {position: { lat: 34.203122610176685, lng: -118.06127267451976 }},
+                        {position: { lat: 34.2121959836666, lng: -118.07851338141907 }}, 
+                        {position: { lat: 34.225415436275355, lng: -118.10625524615706 }},
+                        {position: { lat: 34.22852559424924, lng: -118.14825987751172 }},
+                        {position: { lat: 34.204807739108276, lng: -118.14794641011353 }},
+                        {position: { lat: 34.202085591013606, lng: -118.13979625776115 }},
+                        {position: { lat: 34.19858555715793, lng: -118.12271228456093 }},
+                        {position: { lat: 34.18056456499022, lng: -118.09528388722113 }},
+                        {position: { lat: 34.172654856443174, lng: -118.09214921323942 }},
+                        {position: { lat: 34.17200648680057, lng: -118.0730277019511 }},
+                        {position: { lat: 34.20869636960994, lng: -118.15390229067877 }},
+                        {position: { lat: 34.3309486148011, lng: -118.48989488734837 }},
+                        {position: { lat: 34.0398547767757, lng: -118.53771272240004 }},
+                        {position: { lat: 34.05778483373861, lng: -118.5884613979402 }},
+                        {position: { lat: 34.04048953378803, lng: -118.6265707807043 }},
+                        {position: { lat: 34.03874394057336, lng: -118.522200863084 }},
+                        {position: { lat: 34.187845289002695, lng: -118.10009140008171 }}
+                    ];
+
+                    const fireIcon = {
+                        url: 'https://uxwing.com/wp-content/themes/uxwing/download/e-commerce-currency-shopping/flame-icon.png', // fallback to this if custom icon isn't available
+                        scaledSize: new google.maps.Size(32, 32),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(16, 32)
+                    };
+
+                    fireMarkers.forEach(function(fm) {
+                        var marker = new google.maps.Marker({
+                            position: fm.position,
+                            title: fm.title,
+                            map: map,
+                            icon: fireIcon
+                        });
+                    });
+                }
+                
+            </script>
+
+            <script async defer src="https://maps.googleapis.com/maps/api/js?key=API_KEY&callback=initMap"></script>
+            </script>
+    
+            
+    
+        </div>
+    </div>
+    
+    <footer>
+        <hr>
+        <h3 style="margin-left: 50px;">©Collin Fiske, Franco Garcia 2025</h3>
+    </footer>
+
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+h1 {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Header Section for the Form */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Form Container */
+.form-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Limit the form width for large screens */
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+/* Form Elements (Input groups) */
+.input-group {
+    margin: 0 10px;  /* Add some space between the inputs */
+}
+
+input, select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 120px; /* Give a fixed width to inputs/selects */
+    margin-right: 10px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Adjustments for select elements to match design */
+select {
+    padding: 8px;
+}
+
+/* Button styling */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Property Results */
+ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+    margin-top: 20px;
+}
+
+li {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+
+.nonHeader{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.leftSide{
+    margin-left: 50px;
+    width: 35%;
+    padding: 10px;
+    margin-right: 100px;
+}
+
+.propertyContainer{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 3px;
+    width: 100%;
+    margin: 3px;
+}
+
+.rightSide{
+    width: 50%;
+    padding: 10px;
+    height: 570px;
+}
+
+
+
+
+
+
+.table-container {
+    max-height: 500px;
+    overflow-y: auto;
+    width: 600px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
