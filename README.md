@@ -20,11 +20,11 @@ We learned the importance of planning, this project definetly could've gone smoo
 I believe we can fine tune the AI even more, maybe take in even more parameters into our AI so we get an even better result of how good the deal is.
 
 ## Built With
-flask
-google-maps
-groq api
-groq's llama3 AI model
-html5
-javascript api
-python
-rentcast api
+- flask
+- google-maps
+- groq api
+- groq's llama3 AI model
+- html5
+- javascript api
+- python
+- rentcast api
