@@ -22,7 +22,7 @@ def fetch_properties(beds, baths, min_price, max_price):
     params = {
         "city": "Los Angeles",
         "state": "CA",
-        "limit": 150,
+        "limit": 330,
         "bedrooms": beds,
         "bathrooms": baths
     }
