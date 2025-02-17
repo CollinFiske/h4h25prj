@@ -5,18 +5,7 @@ from datetime import datetime
 api_key = ""
 
 def fetch_properties(beds, baths, min_price, max_price):
-    """
-    Fetch property data from Rentcast API for Los Angeles, CA and return a list of matching properties
     
-    Parameters:
-    beds (int): Number of bedrooms
-    baths (int): Number of bathrooms
-    min_price (float): Minimum price
-    max_price (float): Maximum price
-    
-    Returns:
-    list: List of dictionaries containing property information
-    """
     url = "https://api.rentcast.io/v1/listings/rental/long-term"
     
     params = {
